@@ -13,7 +13,7 @@
             --text-soft: #e0e0e0;
             --text-dim: rgba(248, 248, 248, 0.3);
             --book-color: #0c0c0d;
-            --pillar-stroke: rgba(155, 131, 92, 0.04); /* Aşırı silik altın hattı */
+            --pillar-stroke: rgba(155, 131, 92, 0.04); 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-style: normal !important; }
@@ -33,14 +33,12 @@
             position: relative;
         }
 
-        /* Arka Plan Derinlik Efekti */
         body::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 50% 50%, #111112 0%, #050505 100%);
             z-index: -2;
         }
 
-        /* --- 2. FİKİR: ZİHİNSEL KÖŞE TAŞLARI (BACKGROUND PILLARS) --- */
         .bg-pillars {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -55,7 +53,7 @@
 
         .pillar-name {
             font-family: 'Cinzel', serif;
-            font-size: 15vw; /* Devasa boyut */
+            font-size: 15vw;
             line-height: 1;
             white-space: nowrap;
             color: transparent;
@@ -66,7 +64,6 @@
             opacity: 0.6;
         }
 
-        /* --- 3D KİTAP SİLÜETİ --- */
         .scene {
             width: 160px; height: 240px;
             margin-bottom: 50px;
@@ -117,7 +114,6 @@
             border-left: 1px solid rgba(155, 131, 92, 0.1);
         }
 
-        /* --- DURUM VE VİTRİN --- */
         .status-container { text-align: center; margin-bottom: 40px; z-index: 10; }
         .status-main { font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 8px; color: var(--gold); margin-bottom: 12px; }
         .status-bar-bg { width: 140px; height: 1px; background: rgba(155, 131, 92, 0.1); margin: 0 auto 15px; position: relative; }
