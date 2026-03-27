@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KÜLLİYAT | Ozan Tekgül</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@100;300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --gold: #9b835c; 
+            --text-main: #f8f8f8;
+            --text-soft: #e0e0e0;
+            --text-dim: rgba(248, 248, 248, 0.3);
+            --book-color: #0c0c0d;
+            --pillar-stroke: rgba(155, 131, 92, 0.04); /* Aşırı silik altın hattı */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-style: normal !important; }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 2000px;
+            position: relative;
+        }
+
+        /* Arka Plan Derinlik Efekti */
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #111112 0%, #050505 100%);
+            z-index: -2;
+        }
+
+        /* --- 2. FİKİR: ZİHİNSEL KÖŞE TAŞLARI (BACKGROUND PILLARS) --- */
+        .bg-pillars {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .pillar-name {
+            font-family: 'Cinzel', serif;
+            font-size: 15vw; /* Devasa boyut */
+            line-height: 1;
+            white-space: nowrap;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--pillar-stroke);
+            text-transform: uppercase;
+            letter-spacing: 50px;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        /* --- 3D KİTAP SİLÜETİ --- */
+        .scene {
+            width: 160px; height: 240px;
+            margin-bottom: 50px;
+            perspective: 1000px;
+            animation: initialFade 2s ease-out;
+            z-index: 10;
+        }
+
+        .book {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(-20deg) rotateX(10deg);
+            transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .scene:hover .book { transform: rotateY(-5deg) rotateX(5deg); }
+
+        .book-cover {
+            position: absolute;
+            width: 160px; height: 240px;
+            background: var(--book-color);
+            border: 1px solid rgba(155, 131, 92, 0.2);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 20px 20px 50px rgba(0,0,0,0.5);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 5; transform: translateZ(15px);
+        }
+
+        .book-seal {
+            width: 40px; height: 40px;
+            border: 1px solid var(--gold);
+            transform: rotate(45deg);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .book-seal::after { content: "O"; font-family: 'Cinzel', serif; color: var(--gold); transform: rotate(-45deg); font-size: 0.8rem; }
+
+        .book-pages {
+            position: absolute; width: 30px; height: 234px;
+            background: #1a1a1c; right: -15px; top: 3px;
+            transform: rotateY(90deg);
+            background-image: repeating-linear-gradient(to bottom, #1a1a1c, #1a1a1c 2px, #222 3px);
+        }
+
+        .book-spine {
+            position: absolute; width: 30px; height: 240px;
+            background: #080809; left: -15px; top: 0;
+            transform: rotateY(-90deg);
+            border-left: 1px solid rgba(155, 131, 92, 0.1);
+        }
+
+        /* --- DURUM VE VİTRİN --- */
+        .status-container { text-align: center; margin-bottom: 40px; z-index: 10; }
+        .status-main { font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 8px; color: var(--gold); margin-bottom: 12px; }
+        .status-bar-bg { width: 140px; height: 1px; background: rgba(155, 131, 92, 0.1); margin: 0 auto 15px; position: relative; }
+        .status-bar-fill { position: absolute; left: 0; top: 0; height: 100%; width: 35%; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .status-sub { font-size: 0.55rem; letter-spacing: 4px; color: var(--text-dim); text-transform: uppercase; }
+
+        .quote-vessel {
+            width: 92%; max-width: 850px; height: 180px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 10; margin-bottom: 50px;
+            border: 1px solid var(--gold);
+            background: rgba(12, 12, 13, 0.9);
+            padding: 40px 60px;
+        }
+
+        .quote-content {
+            font-family: 'Montserrat', sans-serif; font-weight: 300;
+            font-size: 0.85rem; line-height: 1.9; color: var(--text-soft);
+            text-align: center; position: absolute; opacity: 0;
+            transform: translateY(10px); transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            max-width: 85%;
+        }
+
+        .quote-content.active { opacity: 1; transform: translateY(0); }
+        .author-tag { display: block; margin-top: 15px; color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 4px; }
+
+        .nav-link { text-decoration: none; font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 5px; color: var(--text-dim); transition: 0.5s; padding: 10px; z-index: 20; }
+        .nav-link:hover { color: var(--gold); letter-spacing: 7px; }
+
+        @keyframes initialFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-pillars">
+        <div class="pillar-name">DOSTOYEVSKY</div>
+        <div class="pillar-name">CAMUS</div>
+        <div class="pillar-name">KAFKA</div>
+    </div>
+
+    <div class="scene">
+        <div class="book">
+            <div class="book-spine"></div>
+            <div class="book-cover">
+                <div class="book-seal"></div>
+            </div>
+            <div class="book-pages"></div>
+        </div>
+    </div>
+
+    <div class="status-container">
+        <div class="status-main">%35 YAZILIYOR...</div>
+        <div class="status-bar-bg">
+            <div class="status-bar-fill"></div>
+        </div>
+        <div class="status-sub">BİRİNCİL METİN TASLAK SÜRECİ</div>
+    </div>
+
+    <div class="quote-vessel" id="display">
+        </div>
+
+    <a href="index.html" class="nav-link">KAYITLARA DÖN</a>
+
+    <script>
+        const archive = [
+            { txt: "Kendi yolunda yanlış gitmek, bir başkasının yolunda doğru gitmekten daha iyidir. Zira kendi yolunda hatan sana aittir. Birinin peşinden giderken yaptığın doğru ise senin değil, onun doğrusudur.", by: "F. DOSTOYEVSKY" },
+            { txt: "Dünyanın en büyük gücü, genç bir adamın rüyaları ve yaşlı bir adamın tecrübesiyle birleşen o sessiz direniştir. Bu direniş, rasyonel dünyanın sınırlarını zorlayan sessiz bir mimaridir.", by: "L. TOLSTOY" },
+            { txt: "Hayatın kısalığından değil, bizim o zamanı ne kadar boş harcadığımızdan şikayet etmeliyiz; çünkü zaman yetersiz değil, biz savurganız. Yaşam, biz onu savurduktan sonra tükenir, yoksa kendiliğinden değil.", by: "SENECA" },
+            { txt: "Görünenin ötesindeki gerçeği aramak, rasyonel bir delilikten ziyade, varoluşun en temel ve en asil borcudur. Biz verilerin soğukluğunda ruhun sıcaklığını, karmaşanın derinliğinde ise mutlak sadeliği ararız.", by: "F. KAFKA" },
+            { txt: "İnsan, kendi içindeki kaosu dindiremediği sürece dış dünyadaki düzenin bir parçası olamaz. Her şey önce zihinde inşa edilir; kaosun içinde düzen arayan bir zihin işçisi olarak bunu biliyorum.", by: "A. CAMUS" },
+            { txt: "Mantığın hatasız mimarisi ile ruhun ölçülemez ahengini aynı satırlarda buluşturuyorum. İnşa ettiğim sistemler, rasyonel dünyanın sınırlarını zorlayan, özünde insana ve duyguya dokunan sessiz anlatılardır.", by: "OZAN TEKGÜL" }
+        ];
+
+        let index = 0;
+        const display = document.getElementById('display');
+
+        function nextQuote() {
+            const data = archive[index];
+            const el = document.createElement('div');
+            el.className = 'quote-content';
+            el.innerHTML = `“${data.txt}” <span class="author-tag">${data.by}</span>`;
+            
+            const old = display.querySelector('.quote-content.active');
+            if (old) {
+                old.classList.remove('active');
+                setTimeout(() => old.remove(), 1200);
+            }
+
+            display.appendChild(el);
+            setTimeout(() => el.classList.add('active'), 100);
+            index = (index + 1) % archive.length;
+        }
+
+        nextQuote();
+        setInterval(nextQuote, 18000); 
+    </script>
+</body>
+</html>
