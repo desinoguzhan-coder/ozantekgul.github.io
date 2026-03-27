@@ -17,8 +17,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
-          // BURAYA KENDİ PUBLIC KEY'İNİ YAPIŞTIRMAYI UNUTMA
-          // emailjs.init("YOUR_PUBLIC_KEY"); 
+        
           emailjs.init("MxfGSiLB-W35cceuR"); 
        })();
     </script>
@@ -268,12 +267,6 @@
                 }, 600);
                 return;
             }
-
-            // KANKA: Kendi EmailJS Service ID, Template ID ve Public Key'ini girerek sistemi aktif edebilirsin.
-            // const templateParams = { message: txt.value.trim() };
-            // emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams, 'YOUR_PUBLIC_KEY')
-            // .then(() => console.log('Sinyal gitti!'))
-            // .catch(err => console.error('Hata:', err));
 
             const env = document.getElementById('envelope');
             const seal = document.getElementById('seal');
