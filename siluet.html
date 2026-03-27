@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SİLÜET | Ozan Tekgül</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@100;300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #00fff2;
+            --dark-bg: #030303;
+            --glass: rgba(10, 10, 15, 0.95);
+            --border: rgba(255, 255, 255, 0.05);
+            --text-dim: rgba(255, 255, 255, 0.3);
+            --white: #ffffff;
+        }
+
+        /* İtalik Kesinlikle Yasak */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-style: normal !important; } 
+        
+        body {
+            background: var(--dark-bg);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.12; }
+        .vignette {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, #000 160%);
+            z-index: 1; pointer-events: none;
+        }
+
+        .dossier-container {
+            position: relative; 
+            z-index: 10; 
+            background: var(--glass); 
+            backdrop-filter: blur(50px); 
+            width: 90%;
+            max-width: 850px;
+            padding: 50px;
+            border-radius: 2px;
+            border: 1px solid var(--border); 
+            box-shadow: 0 0 100px rgba(0,0,0,1); 
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 50px;
+            animation: dossierReveal 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes dossierReveal { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sol Bölüm */
+        .identity-block {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            padding-right: 45px;
+        }
+
+        .name-header h1 { 
+            font-family: 'Cinzel', serif; 
+            font-size: clamp(2.2rem, 5vw, 3.8rem); 
+            letter-spacing: 6px; 
+            text-transform: uppercase; 
+            line-height: 0.95;
+            color: #fff;
+            margin-bottom: 40px;
+            margin-top: 10px;
+        }
+        .name-header h1 span {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .manifesto-text {
+            font-size: 0.85rem;
+            font-weight: 200;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.6px;
+            text-align: justify;
+        }
+
+        /* Sağ Bölüm */
+        .data-block {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .data-section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex; align-items: center;
+        }
+        .data-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); margin-left: 15px; }
+
+        .detailed-list { list-style: none; }
+        .detailed-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .item-label {
+            font-size: 0.55rem;
+            color: #555;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        .item-value {
+            font-size: 0.65rem;
+            color: #fff;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-align: right;
+        }
+
+        .metric-dots { display: flex; gap: 4px; }
+        .dot { width: 4px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+        .dot.active { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+        /* Varoluş İlerleme Barı (%28) */
+        .progress-section { margin-top: 10px; }
+        .progress-meta { display: flex; justify-content: space-between; font-family: 'Cinzel', serif; font-size: 0.5rem; color: #444; letter-spacing: 3px; margin-bottom: 8px; }
+        .progress-bar-bg { width: 100%; height: 2px; background: rgba(255,255,255,0.03); position: relative; }
+        .progress-bar-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--accent); width: 28%; box-shadow: 0 0 10px var(--accent); }
+
+        /* Geri Dön Butonu - Premium Tasarım */
+        .nav-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            /* ÇİZGİ SİLİNDİ */
+        }
+
+        .back-link {
+            font-family: 'Cinzel', serif;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .back-link::before {
+            content: '«';
+            font-size: 1rem;
+            color: var(--accent);
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.4s ease;
+        }
+
+        .back-link:hover {
+            color: var(--white);
+            letter-spacing: 6px;
+        }
+
+        .back-link:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 850px) {
+            .dossier-container { grid-template-columns: 1fr; height: auto; max-height: 95vh; padding: 30px; overflow-y: auto; gap: 40px;}
+            .identity-block { border-right: none; padding-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 40px; }
+            .name-header h1 { margin-bottom: 30px; }
+            .nav-footer { margin-top: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas> 
+    <div class="vignette"></div>
+
+    <div class="dossier-container">
+        
+        <div class="identity-block">
+            <div class="name-header">
+                <h1>OZAN <span>TEKGÜL</span></h1>
+            </div>
+
+            <p class="manifesto-text">
+                Varlığımı, kodun soğuk ve kusursuz geometrisi ile kelimelerin zamansız yankısı arasındaki o ince çizgide tanımlıyorum. Benim için bir algoritma sadece bir işlem dizini değil, kağıda dökülmemiş bir şiirin dijital izdüşümüdür. Her satır kodda bir düzen, her mısrada bir mimari ararken, kaosun ortasında durup evrenin o sessiz ama devasa ahengini dinliyorum. İnşa ettiğim sistemler, rasyonel dünyanın sınırlarını zorlayan, özünde insana ve duyguya dokunan sessiz anlatılardır. Ben, verilerin soğukluğunda ruhun sıcaklığını, karmaşanın derinliğinde ise mutlak sadeliği arayan bir zihin işçisiyim.
+            </p>
+        </div>
+
+        <div class="data-block">
+            
+            <div class="data-section">
+                <div class="data-section-title">PARAMETRELER</div>
+                <ul class="detailed-list">
+                    <li class="detailed-item">
+                        <span class="item-label">DURUM</span>
+                        <span class="item-value">ÜRETİMDE [ACTIVE]</span>
+                    </li>
+                    <li class="detailed-item">
+                        <span class="item-label">ODAK</span>
+                        <span class="item-value">DİJİTAL YAPI İNŞASI</span>
+                    </li>
+                    <li class="detailed-item">
+                        <span class="item-label">KONUM</span>
+                        <span class="item-value">ISTANBUL / MERKEZ</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="data-section">
+                <div class="data-section-title">TEKNİK ATÖLYE</div>
+                <ul class="detailed-list">
+                    <li class="detailed-item">
+                        <span class="item-label">STRÜKTÜR (REACT, NEXT.JS)</span>
+                        <div class="item-value metric-dots">
+                            <div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot"></div>
+                        </div>
+                    </li>
+                    <li class="detailed-item">
+                        <span class="item-label">ALGORİTMA (PYTHON, JS)</span>
+                        <div class="item-value metric-dots">
+                            <div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+                        </div>
+                    </li>
+                    <li class="detailed-item">
+                        <span class="item-label">GÖRSEL (3D, UI/UX)</span>
+                        <div class="item-value metric-dots">
+                            <div class="dot active"></div><div class="dot active"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="data-section">
+                <div class="data-section-title">ZİHİNSEL ENVANTER</div>
+                <ul class="detailed-list">
+                    <li class="detailed-item">
+                        <span class="item-label">TEORİK TABAN</span>
+                        <span class="item-value">KÖKLEŞMİŞ</span>
+                    </li>
+                    <li class="detailed-item">
+                        <span class="item-label">DİJİTAL ÜRETİM</span>
+                        <span class="item-value">EVRİLİYOR</span>
+                    </li>
+                    <li class="detailed-item">
+                        <span class="item-label">SÖZEL REZONANS</span>
+                        <span class="item-value">YAYILIMDA</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="data-section progress-section">
+                <div class="progress-meta">
+                    <span>VAROLUŞ SÜRECİ</span>
+                    <span>%28 TAMAMLANDI</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="nav-footer">
+                <a href="index.html" class="back-link">GERİ DÖN</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height, stars = [];
+        function resizeCanvas() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        class Star {
+            constructor() { this.reset(); }
+            reset() { this.x = (Math.random() - 0.5) * width * 2; this.y = (Math.random() - 0.5) * height * 2; this.z = Math.random() * width; }
+            update() { this.z -= 0.1; if (this.z < 1) { this.reset(); this.z = width; } }
+            draw() {
+                let sx = (width/2) + (this.x / this.z) * (width/2);
+                let sy = (height/2) + (this.y / this.z) * (height/2);
+                const depth = (1 - this.z / width);
+                ctx.fillStyle = `rgba(255, 255, 255, ${depth * 0.2})`;
+                ctx.beginPath(); ctx.arc(sx, sy, depth * 1.05, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+        for (let i = 0; i < 200; i++) stars.push(new Star());
+        function animate() { ctx.fillStyle = "rgba(3, 3, 3, 0.4)"; ctx.fillRect(0, 0, width, height); stars.forEach(s => { s.update(); s.draw(); }); requestAnimationFrame(animate); }
+        animate();
+    </script>
+</body>
+</html>
