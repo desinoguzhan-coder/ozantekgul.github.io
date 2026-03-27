@@ -243,7 +243,8 @@
         }
         setInterval(createShootingStar, 5000);
 
-        const birthDate = new Date("2000-01-01T00:00:00").getTime();
+        // Doğum tarihine göre ayarlandı
+        const birthDate = new Date("2002-10-06T00:00:00").getTime();
         setInterval(() => {
             const now = new Date().getTime();
             const diff = now - birthDate; 
