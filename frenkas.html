@@ -17,7 +17,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
-        
           emailjs.init("MxfGSiLB-W35cceuR"); 
        })();
     </script>
@@ -171,7 +170,6 @@
         }
         .final-message.visible { opacity: 1; }
 
-        /* Geri Dön Butonu */
         .back-nav {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             text-decoration: none; font-family: 'Cinzel', serif; font-size: 0.65rem; color: var(--text-dim);
@@ -198,7 +196,7 @@
             
             <div class="signal-overlay">
                 <div class="bp-line"><span class="bp-code">LOG_ID: INCOMING_SIGNAL</span></div>
-                <textarea id="letterText" placeholder="Kendi frekansından benimkine bir mesaj bırak..."></textarea>
+                <textarea id="letterText" placeholder="Ana frekansa şifresiz bir sinyal gönder..."></textarea>
                 <div class="action-wrapper">
                     <div class="premium-btn" onclick="sendToFuture()">SİNYALİ BANA İLET</div>
                 </div>
@@ -267,6 +265,8 @@
                 }, 600);
                 return;
             }
+
+           
 
             const env = document.getElementById('envelope');
             const seal = document.getElementById('seal');
