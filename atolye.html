@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ATÖLYE | Ozan Tekgül</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@100;300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1115;
+            --gold: #c5a059;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(197, 160, 89, 0.15);
+            --text-main: #e0e0e0;
+            --text-dim: #707580;
+            --text-gold: rgba(197, 160, 89, 0.8);
+        }
+
+        /* İtalik Kesinlikle Yasak */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-style: normal !important; }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                linear-gradient(rgba(197, 160, 89, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(197, 160, 89, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            overflow-x: hidden;
+            perspective: 2000px;
+        }
+
+        .header-section { text-align: center; margin-bottom: 70px; z-index: 10; }
+        .header-section h1 { font-family: 'Cinzel', serif; font-size: clamp(2rem, 5vw, 2.8rem); letter-spacing: 12px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+        .header-section p { font-size: 0.55rem; letter-spacing: 5px; color: var(--text-dim); text-transform: uppercase; }
+
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; width: 100%; max-width: 1100px; z-index: 10; }
+
+        .tech-card {
+            position: relative;
+            height: 420px; /* Metinler için biraz yükseltildi */
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            animation: floatUI 6s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes floatUI { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        .tech-card:hover { border-color: var(--gold); background: rgba(197, 160, 89, 0.05); box-shadow: 0 15px 40px rgba(0,0,0,0.4); animation-play-state: paused; }
+
+        .hover-cmd { position: absolute; top: 15px; width: 100%; text-align: center; font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 3px; color: var(--gold); opacity: 0.6; z-index: 5; }
+
+        .front-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; transition: all 0.5s ease; }
+        .tech-card:hover .front-content { opacity: 0; transform: scale(0.9); }
+
+        .cat-tag { font-family: 'Cinzel', serif; font-size: 0.5rem; color: var(--gold); letter-spacing: 4px; margin-bottom: 15px; }
+        .proj-name { font-family: 'Cinzel', serif; font-size: 1.4rem; letter-spacing: 4px; text-transform: uppercase; text-align: center; }
+
+        /* --- DETAY OVERLAY --- */
+        .detail-overlay {
+            position: absolute;
+            inset: 0;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            pointer-events: none;
+        }
+        .tech-card:hover .detail-overlay { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        .bp-line { border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        .bp-code { font-family: 'Cinzel', serif; font-size: 0.6rem; color: var(--gold); letter-spacing: 3px; }
+
+        .spec-table { width: 100%; margin-bottom: 15px; }
+        .spec-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.55rem; letter-spacing: 1px; }
+        .spec-label { color: var(--text-dim); text-transform: uppercase; }
+        .spec-value { color: var(--text-main); font-weight: 300; }
+
+        /* YENİ: PROJE AÇIKLAMA YAZISI */
+        .proj-desc {
+            font-size: 0.65rem;
+            line-height: 1.6;
+            color: var(--text-soft);
+            text-align: justify;
+            margin-bottom: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(197, 160, 89, 0.05);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .action-wrapper { margin-top: auto; }
+        
+        .inspect-btn {
+            display: block; text-align: center; text-decoration: none; border: 1px solid var(--gold); color: var(--gold); padding: 12px;
+            font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 4px; transition: 0.4s; background: rgba(197, 160, 89, 0.05);
+        }
+        .inspect-btn:hover { background: var(--gold); color: #000; letter-spacing: 6px; }
+
+        .status-badge {
+            text-align: center; color: var(--text-dim); font-family: 'Cinzel', serif; font-size: 0.55rem;
+            letter-spacing: 3px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-nav { margin-top: 80px; }
+        .back-link { text-decoration: none; font-family: 'Cinzel', serif; color: var(--text-dim); font-size: 0.7rem; letter-spacing: 5px; transition: 0.4s; }
+        .back-link:hover { color: var(--gold); letter-spacing: 7px; }
+
+        @media (max-width: 768px) { .tech-card { animation: none; height: auto; min-height: 380px; } .project-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>ATÖLYE</h1>
+        <p>Sistem Mimarisi ve Yazılım Laboratuvarı</p>
+    </div>
+
+    <div class="project-grid">
+        
+        <div class="tech-card" style="animation-delay: 0s;">
+            <div class="hover-cmd">[ FAREYİ ÜZERİNE GETİR // BAS ]</div>
+            <div class="front-content">
+                <span class="cat-tag">SOCIAL_PROTOCOL</span>
+                <h2 class="proj-name">Date<br>Protocol</h2>
+            </div>
+            <div class="detail-overlay">
+                <div class="bp-line"><span class="bp-code">LOG_ID: DATE_01</span></div>
+                <div class="spec-table">
+                    <div class="spec-item"><span class="spec-label">STACK</span><span class="spec-value">Next.js / TypeScript</span></div>
+                    <div class="spec-item"><span class="spec-label">STATE</span><span class="spec-value">Live / %35</span></div>
+                </div>
+                <p class="proj-desc">
+                    Dijital ipliklerle örülmüş modern bir bağ arayışı. İki yabancının aynı koordinatta, aynı anda var olma sanatını algoritmalarla harmanlayan, etkileşimi rasyonel bir düzleme taşıyan bir sosyal protokol.
+                </p>
+                <div class="action-wrapper">
+                    <a href="date.html" class="inspect-btn">Arayüzü İncele</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-card" style="animation-delay: 1s;">
+            <div class="hover-cmd">[ FAREYİ ÜZERİNE GETİR // İNCELE ]</div>
+            <div class="front-content">
+                <span class="cat-tag">NEURAL_VOID</span>
+                <h2 class="proj-name">Neural<br>Void</h2>
+            </div>
+            <div class="detail-overlay">
+                <div class="bp-line"><span class="bp-code">LOG_ID: GAME_02</span></div>
+                <div class="spec-table">
+                    <div class="spec-item"><span class="spec-label">ENGINE</span><span class="spec-value">Unity / C#</span></div>
+                    <div class="spec-item"><span class="spec-label">SHADING</span><span class="spec-value">Ray Tracing</span></div>
+                </div>
+                <p class="proj-desc">
+                    Kaosun kalbinde yükselen prosedürel bir labirent. Her adımda kendini yeniden inşa eden mutlak geometrisiyle oyuncuyu stratejik bir fethe davet eden, tekinsiz ve dinamik bir oyun simülasyonu.
+                </p>
+                <div class="action-wrapper">
+                    <div class="status-badge">Prototip Tamamlandı</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="float-card tech-card" style="animation-delay: 0.5s;">
+            <div class="hover-cmd">[ FAREYİ ÜZERİNE GETİR // İNCELE ]</div>
+            <div class="front-content">
+                <span class="cat-tag">AXIS_FLOW</span>
+                <h2 class="proj-name">Axis<br>Flow</h2>
+            </div>
+            <div class="detail-overlay">
+                <div class="bp-line"><span class="bp-code">LOG_ID: FLOW_03</span></div>
+                <div class="spec-table">
+                    <div class="spec-item"><span class="spec-label">STACK</span><span class="spec-value">Flutter / Go</span></div>
+                    <div class="spec-item"><span class="spec-label">GEO</span><span class="spec-value">Mapbox API</span></div>
+                </div>
+                <p class="proj-desc">
+                    Şehrin damarlarında akan verinin lojistik izdüşümü. Mesafeyi akıllı algoritmalarla eritip, kentsel hareketi mükemmel bir akışa dönüştüren, gerçek zamanlı koordinasyon ve dinamik rotalama sistemi.
+                </p>
+                <div class="action-wrapper">
+                    <div class="status-badge">Prototip Tamamlandı</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-nav">
+        <a href="index.html" class="back-link">Kayıtlara Dön</a>
+    </div>
+
+</body>
+</html>
