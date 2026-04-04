@@ -13,6 +13,7 @@
             --border: rgba(197, 160, 89, 0.15);
             --text-main: #e0e0e0;
             --text-dim: #707580;
+            --text-soft: rgba(224, 224, 224, 0.7); 
             --text-gold: rgba(197, 160, 89, 0.8);
         }
 
@@ -117,6 +118,110 @@
         .back-link { text-decoration: none; font-family: 'Cinzel', serif; color: var(--text-dim); font-size: 0.7rem; letter-spacing: 5px; transition: 0.4s; }
         .back-link:hover { color: var(--gold); letter-spacing: 7px; }
 
+        .access-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 17, 21, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.5s ease;
+        }
+
+        .access-modal {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 400px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-header {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .modal-prompt {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-input-wrapper {
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            padding: 12px;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--gold);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-align: center;
+            transition: 0.4s;
+            box-sizing: border-box; 
+        }
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(197, 160, 89, 0.05);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .modal-btn {
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 12px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            transition: 0.4s;
+            background: rgba(197, 160, 89, 0.05);
+            cursor: pointer;
+        }
+        .modal-btn:hover {
+            background: var(--gold);
+            color: #000;
+            letter-spacing: 6px;
+        }
+
+        .modal-error {
+            display: none;
+            margin-bottom: 15px;
+            color: rgba(255, 50, 50, 0.9);
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) { .tech-card { animation: none; height: auto; min-height: 380px; } .project-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -145,7 +250,7 @@
                     Dijital ipliklerle örülmüş modern bir bağ arayışı. İki yabancının aynı koordinatta, aynı anda var olma sanatını algoritmalarla harmanlayan, etkileşimi rasyonel bir düzleme taşıyan bir sosyal protokol.
                 </p>
                 <div class="action-wrapper">
-                    <a href="date" class="inspect-btn">Arayüzü İncele</a>
+                    <a href="date.html" class="inspect-btn" onclick="checkAccess(event)">Arayüzü İncele</a>
                 </div>
             </div>
         </div>
@@ -197,6 +302,67 @@
     <div class="footer-nav">
         <a href="index.html" class="back-link">Kayıtlara Dön</a>
     </div>
+
+    <div class="access-modal-overlay" id="accessModalOverlay">
+        <div class="access-modal">
+            <h3 class="modal-header">ERİŞİM KONTROLÜ</h3>
+            <p class="modal-prompt">Protokol şifresini giriniz:</p>
+            <p id="modalError" class="modal-error">Erişim Reddedildi: Geçersiz Şifre.</p>
+            <div class="modal-input-wrapper">
+                <input type="password" id="modalPasswordInput" class="modal-input" placeholder="********">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn" onclick="closeAccessModal()">İPTAL</button>
+                <button type="button" class="modal-btn" onclick="submitPassword()">ONAYLA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var modalOverlay = document.getElementById('accessModalOverlay');
+        var passwordInput = document.getElementById('modalPasswordInput');
+        var errorDisplay = document.getElementById('modalError');
+
+        function checkAccess(event) {
+            event.preventDefault(); 
+            
+            errorDisplay.style.display = 'none';
+            passwordInput.value = '';
+            modalOverlay.style.display = 'flex';
+            passwordInput.focus();
+        }
+
+        function closeAccessModal() {
+            modalOverlay.style.display = 'none';
+        }
+
+        function submitPassword() {
+            var userInput = passwordInput.value;
+            
+            var key = [99, 101, 107, 105, 114, 100, 101, 107, 49, 50]; 
+            
+            var isValid = userInput.length === key.length && key.every(function(val, index) {
+                return userInput.charCodeAt(index) === val;
+            });
+            
+            if (isValid) {
+                window.location.href = "date.html";
+            } else {
+                errorDisplay.style.display = 'block';
+                passwordInput.value = ''; 
+                passwordInput.focus(); 
+            }
+        }
+        passwordInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                submitPassword();
+            }
+            if (event.key === 'Escape') {
+                closeAccessModal();
+            }
+        });
+    </script>
 
 </body>
 </html>
