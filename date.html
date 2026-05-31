@@ -29,95 +29,13 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        #heart-intro {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-
-        #white-flash-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 20000; 
-            opacity: 0; pointer-events: none;
-            transition: opacity 5s ease-in-out; 
-        }
-        #white-flash-overlay.flash-instant {
-            transition: none !important;
-            opacity: 1 !important;
-        }
-
-        .pulse-container {
-            position: relative; width: 100%; max-width: 400px; height: 200px;
-            display: flex; justify-content: center; align-items: center;
-        }
-        
-        .pulse-container.shaking {
-            animation: violentShake 0.5s infinite linear;
-        }
-
-        .heart-node {
-            width: 25px; height: 25px; border-radius: 50%;
-            position: absolute;
-            box-shadow: 0 0 30px currentColor;
-            z-index: 2;
-        }
-
-        .node-left {
-            background-color: var(--turq); color: var(--turq);
-            left: 10%;
-            animation: beat-left 1.5s infinite ease-in-out;
-            transition: left 5s cubic-bezier(0.5, 0, 0.2, 1);
-        }
-
-        .node-right {
-            background-color: var(--pink); color: var(--pink);
-            right: 10%;
-            animation: beat-right 1.1s infinite ease-in-out; 
-            transition: right 5s cubic-bezier(0.5, 0, 0.2, 1);
-        }
-
         .ecg-line {
             position: absolute; width: 100%; height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
             top: 50%; transform: translateY(-50%); z-index: 0;
         }
 
-        .intro-status {
-            margin-top: 60px; font-family: 'Cinzel', serif; font-size: 0.9rem;
-            letter-spacing: 6px; color: rgba(255,255,255,0.4);
-            text-transform: uppercase;
-            animation: textPulse 2s infinite;
-            transition: opacity 0.2s;
-        }
-
-        @keyframes beat-left {
-            0%, 100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 20px var(--turq); }
-            50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 50px var(--turq); }
-        }
-        @keyframes beat-right {
-            0%, 100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 20px var(--pink); }
-            50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 50px var(--pink); }
-        }
-        
-        @keyframes beat-fast {
-            0%, 100% { transform: scale(1.3); opacity: 1; }
-            50% { transform: scale(0.8); opacity: 0.9; }
-        }
-
-        @keyframes violentShake {
-            0% { transform: translate(0,0) rotate(0); }
-            20% { transform: translate(-3px, 3px) rotate(-1deg); }
-            40% { transform: translate(-3px, -3px) rotate(1deg); }
-            60% { transform: translate(3px, 3px) rotate(0); }
-            80% { transform: translate(3px, -3px) rotate(-1deg); }
-            100% { transform: translate(0,0) rotate(0); }
-        }
-
         @keyframes textPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-        .pulse-container.merging .node-left { left: 45%; animation: beat-fast 0.2s infinite; }
-        .pulse-container.merging .node-right { right: 45%; animation: beat-fast 0.2s infinite; }
-        
 
         #genesis-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -132,7 +50,7 @@
         .genesis-content { 
             width: 100%; max-width: 350px; text-align: center; 
             max-height: 100dvh; overflow-y: auto; padding: 10px 0;
-            animation: floatIn 3s ease-out; 
+            animation: floatIn 1.5s ease-out; 
         }
         
         @keyframes floatIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -320,17 +238,6 @@
 </head>
 <body>
 
-    <div id="white-flash-overlay"></div>
-
-    <div id="heart-intro">
-        <div class="pulse-container" id="pulseContainer">
-            <div class="ecg-line"></div>
-            <div class="heart-node node-left"></div>
-            <div class="heart-node node-right"></div>
-        </div>
-        <div class="intro-status" id="introText">Frekans Aranıyor...</div>
-    </div>
-
     <div id="genesis-layer">
         <div class="genesis-content">
             <h2 class="genesis-title">KİMSİN?</h2>
@@ -436,117 +343,9 @@
     </div>
 
 <script>
-    const AudioEngine = {
-        ctx: null,
-        init: function() {
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.ctx = new AudioContext();
-        },
-        playIntroSound: function() {
-            if (!this.ctx) this.init();
-            const t = this.ctx.currentTime;
-
-            const kickTimes = [0, 1.2, 2.4, 3.5, 4.5, 5.5, 6.4, 7.2, 8.0, 8.7, 9.3, 9.8, 10.2, 10.5];
-            kickTimes.forEach(time => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.frequency.setValueAtTime(150, t + time);
-                osc.frequency.exponentialRampToValueAtTime(0.01, t + time + 0.5);
-                gain.gain.setValueAtTime(1, t + time);
-                gain.gain.exponentialRampToValueAtTime(0.01, t + time + 0.5);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(t + time);
-                osc.stop(t + time + 0.5);
-            });
-
-            const drone = this.ctx.createOscillator();
-            const droneGain = this.ctx.createGain();
-            drone.type = 'sawtooth';
-            drone.frequency.setValueAtTime(50, t);
-            drone.frequency.linearRampToValueAtTime(100, t + 10);
-            const filter = this.ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(200, t);
-            filter.frequency.linearRampToValueAtTime(800, t + 10);
-            droneGain.gain.setValueAtTime(0, t);
-            droneGain.gain.linearRampToValueAtTime(0.3, t + 2);
-            droneGain.gain.setValueAtTime(0.3, t + 9);
-            droneGain.gain.exponentialRampToValueAtTime(0.01, t + 10);
-            drone.connect(filter);
-            filter.connect(droneGain);
-            droneGain.connect(this.ctx.destination);
-            drone.start(t);
-            drone.stop(t + 10);
-
-            const noiseBufferSize = this.ctx.sampleRate * 2.0;
-            const buffer = this.ctx.createBuffer(1, noiseBufferSize, this.ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < noiseBufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-            const noise = this.ctx.createBufferSource();
-            noise.buffer = buffer;
-            const noiseFilter = this.ctx.createBiquadFilter();
-            noiseFilter.type = 'lowpass';
-            noiseFilter.frequency.value = 1000;
-            const noiseGain = this.ctx.createGain();
-            noiseGain.gain.setValueAtTime(1, t + 10);
-            noiseGain.gain.exponentialRampToValueAtTime(0.01, t + 13); 
-            noise.connect(noiseFilter);
-            noiseFilter.connect(noiseGain);
-            noiseGain.connect(this.ctx.destination);
-            noise.start(t + 10);
-
-            const ring = this.ctx.createOscillator();
-            const ringGain = this.ctx.createGain();
-            ring.type = 'sine';
-            ring.frequency.setValueAtTime(800, t + 10);
-            ring.frequency.exponentialRampToValueAtTime(400, t + 14);
-            ringGain.gain.setValueAtTime(0.2, t + 10);
-            ringGain.gain.exponentialRampToValueAtTime(0.001, t + 15);
-            ring.connect(ringGain);
-            ringGain.connect(this.ctx.destination);
-            ring.start(t + 10);
-            ring.stop(t + 15);
-        }
-    };
-
     window.addEventListener('load', () => {
-        AudioEngine.playIntroSound();
-
-        const container = document.getElementById('pulseContainer');
-        const txt = document.getElementById('introText');
-        const intro = document.getElementById('heart-intro');
         const genesis = document.getElementById('genesis-layer');
-        const flashOverlay = document.getElementById('white-flash-overlay');
-
-        setTimeout(() => {
-            container.classList.add('merging');
-            txt.innerText = "Sinyal Yakalanıyor...";
-            txt.style.color = "#fff";
-            txt.style.textShadow = "0 0 10px rgba(255,255,255,0.5)";
-        }, 5000);
-        
-        setTimeout(() => {
-            container.classList.add('shaking'); // Ekran titrer
-            txt.innerText = "KİLİTLENİYOR...";
-            txt.style.color = "red";
-            txt.style.letterSpacing = "8px";
-        }, 9000);
-
-        setTimeout(() => {
-            flashOverlay.classList.add('flash-instant');
-            intro.style.display = 'none';
-            genesis.classList.add('visible');
-            
-            requestAnimationFrame(() => {
-                flashOverlay.classList.remove('flash-instant'); 
-                flashOverlay.style.opacity = '0'; 
-            });
-        }, 10000);
-        
-        setTimeout(() => {
-            flashOverlay.style.display = 'none';
-        }, 15000);
+        genesis.classList.add('visible');
     });
 
     const soundscapes = {
